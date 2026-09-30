@@ -213,8 +213,9 @@ rc.limit_method = "ANGLE"
 rc.angle_limit = math.radians(85)
 bpy.ops.object.modifier_apply(modifier=rc.name)
 
-# raise plug 0.4mm into the token so the union welds cleanly
-plug.location.z += 0.4
+# Raise the plug into the token; configurable for testing boolean seams on
+# voxel-repaired inputs. Its 16 mm XY interface is never rescaled.
+plug.location.z += float(os.environ.get("AWARD_PLUG_OVERLAP_MM", "0.4"))
 set_active(plug)
 bpy.ops.object.transform_apply(location=True)
 # DIAMOND orientation (see connector_std): rotate the plug 45 deg about Z so the

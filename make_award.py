@@ -26,12 +26,14 @@ def run(command, *, cwd=None, capture=False, dry_run=False, extra_env=None):
     if dry_run:
         return ""
     result = subprocess.run(
-        list(map(str, command)), cwd=cwd, check=True, text=True,
+        list(map(str, command)), cwd=cwd, check=False, text=True,
         env={**os.environ, **(extra_env or {})},
         stdout=subprocess.PIPE if capture else None,
     )
     if capture:
         print(result.stdout, end="")
+    if result.returncode:
+        raise subprocess.CalledProcessError(result.returncode, list(map(str, command)))
     return result.stdout or ""
 
 
@@ -70,6 +72,7 @@ def main(argv=None):
         out.mkdir(parents=True, exist_ok=True)
 
     raw = out / "raw-top.glb"
+    top_before_cleanup = out / ".top-before-cleanup.stl"
     top = out / "top-with-plug.stl"
     base = out / "named-base.stl"
     blender = [args.blender, "--background", "--factory-startup", "--python-exit-code", "1", "--python"]
@@ -77,13 +80,17 @@ def main(argv=None):
          "--out", raw, "--model", args.model, "--seed", args.seed], cwd=trellis_root,
         extra_env={"PYTHONPATH": str(trellis_root) + os.pathsep + os.environ.get("PYTHONPATH", "")},
         dry_run=args.dry_run)
-    run(blender + [ROOT / "scripts/weld_plug.py", "--", raw, top, 38, 0],
-        extra_env={"AWARD_VOXEL_MM": "0.18"}, dry_run=args.dry_run)
+    run(blender + [ROOT / "scripts/weld_plug.py", "--", raw, top_before_cleanup, 38, 0],
+        extra_env={"AWARD_VOXEL_MM": "0.18", "AWARD_PLUG_OVERLAP_MM": "1.0"},
+        dry_run=args.dry_run)
+    run(blender + [ROOT / "scripts/repair_boolean_slivers.py", "--", top_before_cleanup, top],
+        dry_run=args.dry_run)
     run(blender + [ROOT / "scripts/build_base_named.py", "--", "--name", args.name,
                    "--message", args.message, "--font", font, "--out", base], dry_run=args.dry_run)
     reports = {}
     for label, part in (("top", top), ("base", base)):
-        output = run(blender + [ROOT / "scripts/inspect_stl.py", "--", part],
+        output = run(blender + [ROOT / "scripts/inspect_stl.py", "--", part,
+                                "--kind", label],
                      capture=True, dry_run=args.dry_run)
         if not args.dry_run:
             lines = [line.removeprefix("INSPECTION_JSON=") for line in output.splitlines()
@@ -104,6 +111,7 @@ def main(argv=None):
     missing = [str(p) for p in expected if not p.is_file() or p.stat().st_size == 0]
     if missing:
         raise RuntimeError(f"output missing or empty: {', '.join(missing)}")
+    top_before_cleanup.unlink(missing_ok=True)
     handoff = out / "PRINT_HANDOFF.md"
     handoff.write_text(
         "# Print handoff — candidate, not print-proven\n\n"

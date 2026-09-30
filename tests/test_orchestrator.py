@@ -29,8 +29,8 @@ class OrchestratorTests(unittest.TestCase):
             subprocess_run.assert_not_called()
             self.assertFalse(out.exists())
             commands = printed.getvalue()
-            for stage in ("trellis_generate.py", "weld_plug.py", "build_base_named.py",
-                          "inspect_stl.py", "render_views.py"):
+            for stage in ("trellis_generate.py", "weld_plug.py", "repair_boolean_slivers.py",
+                          "build_base_named.py", "inspect_stl.py", "render_views.py"):
                 self.assertIn(stage, commands)
             self.assertIn("PYTHONPATH=" + str(trellis.resolve()), commands)
             self.assertEqual(commands.count("inspect_stl.py"), 2)

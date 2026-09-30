@@ -24,7 +24,7 @@ python3 make_award.py \
 
 TRELLIS may download its model on first use. Use `--dry-run` to see all commands without running the model or Blender. `--model` accepts a local model directory or model ID; `--seed` fixes the generation seed. The output folder must be new or empty, so each run has independent evidence.
 
-The output contains `raw-top.glb`, `top-with-plug.stl`, `named-base.stl`, five views for each STL (`front`, `side`, `top`, `bottom`, `display`), `PRINT_HANDOFF.md`, and `manifest.json` with the input, font and output checksums plus actual geometry inspection results. The top stage applies a 0.18 mm voxel repair to close small reconstruction gaps before attaching the plug. A failed generation, Blender command, mesh inspection or missing output stops the run; it does not write a success manifest. A valid result can still depict the wrong subject or have a weak joint. If so, use another input image or seed and start a new run. The tool does not silently keep repairing a shape until a test passes.
+The output contains `raw-top.glb`, `top-with-plug.stl`, `named-base.stl`, five views for each STL (`front`, `side`, `top`, `bottom`, `display`), `PRINT_HANDOFF.md`, and `manifest.json` with the input, font and output checksums plus actual geometry inspection results. The top stage applies a 0.18 mm voxel repair to close small reconstruction gaps, attaches the plug with 1.0 mm overlap, and removes only microscopic boolean slivers. A failed generation, Blender command, mesh inspection or missing output stops the run; it does not write a success manifest. A valid result can still depict the wrong subject or have a weak joint. If so, use another input image or seed and start a new run. The tool does not silently keep repairing a shape until a test passes.
 
 The generated top and base are **separate single-colour millimetre STLs**. Import them into a slicer configured for your nozzle, material and printer. Review the slicer preview, print one fit test and inspect the real part before calling it proven. The nominal plug is 16.00 mm and the socket is 16.70 mm, but a real friction fit depends on machine calibration. This repository does not start a printer or promise a universal G-code file.
 
@@ -33,9 +33,9 @@ The generated top and base are **separate single-colour millimetre STLs**. Impor
 | Stage | Program | Output / gate |
 | --- | --- | --- |
 | Image → raw mesh | Installed TRELLIS via `scripts/trellis_generate.py` | GLB must be written |
-| Raw mesh → top | Blender `scripts/weld_plug.py` | 0.18 mm voxel repair, standard diamond plug; detached islands refused |
+| Raw mesh → top | Blender `scripts/weld_plug.py` and `scripts/repair_boolean_slivers.py` | 0.18 mm voxel repair, standard diamond plug, microscopic sliver cleanup; larger damage refused |
 | Name/message → base | Blender `scripts/build_base_named.py` | font measured; undersized wording refused |
-| Written-file QA | Blender `scripts/inspect_stl.py` | each STL must be one watertight body at plausible scale |
+| Written-file QA | Blender `scripts/inspect_stl.py` | each STL must be one watertight body at plausible scale; top must show a centred diamond plug section |
 | Views and record | Blender `scripts/render_views.py`, `make_award.py` | ten PNGs and checksummed manifest |
 
 These checks are necessary but do not measure every thin feature, visual likeness, surface finish, orientation or physical strength. No arbitrary photo-to-award system can guarantee those without inspecting the result and a physical trial. [PHOTO_TO_TOP.md](PHOTO_TO_TOP.md) describes input choices and failure cases; it is not a mandatory manual modelling step.

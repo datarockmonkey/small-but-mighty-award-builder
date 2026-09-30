@@ -10,7 +10,7 @@ The image shows the **two printable parts**: a generated top with the diamond pl
 
 ## Brand notes
 
-Small But Mighty is about recognising what makes someone *them*. Write a specific, positive message on the base rather than a generic ranking or comparison. This README illustration uses the [final colour branding guideline](https://drive.google.com/file/d/12GWyrLFF7M4H44_XDDREt6Vmh4TYNMOE/view?usp=drivesdk):
+Small But Mighty is about recognising what makes someone *them*. Write a specific, positive message on the base rather than a generic ranking or comparison. The full [brand guidelines for this repository](BRAND_GUIDELINES.md) cover the visual system, typography, diagrams, and honest product claims. This README illustration uses the four primary colours:
 
 | Colour | Hex | Use here |
 | --- | --- | --- |

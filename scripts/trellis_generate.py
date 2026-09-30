@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 
 os.environ.setdefault("SPCONV_ALGO", "native")
+os.environ.setdefault("ATTN_BACKEND", "xformers")
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 
 def main():

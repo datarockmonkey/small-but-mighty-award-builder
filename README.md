@@ -66,4 +66,4 @@ On Blender 5.0.1, `Alex` / `Well|Done` exported at 40 × 31.6 × 30 mm; the writ
 
 ## Licence and scope
 
-The source code in this repository is offered under [MIT](LICENSE) by Dotted Line Studio LTD, subject to the owner confirming publication rights for adapted production modules. Your photo, generated mesh, model service and font each have **separate** rights. This repository grants no right to redistribute anyone else's image, model or font. No paid STL assets are included here. See [SOURCE_SCOPE.md](SOURCE_SCOPE.md).
+The source code in this repository is offered under [MIT](LICENSE) by Dotted Line Studio LTD. Your photo, generated mesh, model service and font each have **separate** rights. This repository grants no right to redistribute anyone else's image, model or font. No paid STL assets are included here. See [SOURCE_SCOPE.md](SOURCE_SCOPE.md).

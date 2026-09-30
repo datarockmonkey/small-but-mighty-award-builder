@@ -1,6 +1,25 @@
 # Small But Mighty award builder
 
-Give the workflow one image and your own wording. It runs image-to-3D generation, attaches the standard diamond plug, makes a named base, checks both written STLs, and renders ten inspection views. There is no hand-modelling handoff in the command. **A passed run produces candidate STLs, not a print-proven award:** shape identity, surface quality, support strategy and physical plug/socket fit still depend on the input and printer.
+Give the workflow one image and your own wording. It runs image-to-3D generation, attaches the standard diamond plug, makes a named base, checks both written STLs, and renders twelve review views. There is no hand-modelling handoff in the command. **A passed run produces candidate STLs, not a print-proven award:** shape identity, surface quality, support strategy and physical plug/socket fit still depend on the input and printer.
+
+## How the two parts meet
+
+![Concept illustration of an upright open-book top with its integral diamond plug aligned above the matching socket in an award base](assets/award-assembly-concept.png)
+
+The image shows the **two printable parts**: a generated top with the diamond plug welded into its underside, and a personalised base with the matching socket in its top. Print the two STLs separately, then test the fit before pressing them together. The arrow shows assembly direction; the image is a branded **concept illustration**, not a measured render or proof of a physical fit. For real output from this repository, see the [open-book end-to-end test](examples/OPEN_BOOK_TEST.md).
+
+## Brand notes
+
+Small But Mighty is about recognising what makes someone *them*. Write a specific, positive message on the base rather than a generic ranking or comparison. This README illustration uses the [final colour branding guideline](https://drive.google.com/file/d/12GWyrLFF7M4H44_XDDREt6Vmh4TYNMOE/view?usp=drivesdk):
+
+| Colour | Hex | Use here |
+| --- | --- | --- |
+| Blue | `#0051FF` | The top token and links |
+| Lime | `#BEFF85` | The base and large colour fields |
+| Butter | `#FFF988` | A warm background accent |
+| Navy | `#0A1470` | Small text, outlines, and the assembly arrow |
+
+Lime and Butter are colour fields, not small-text colours. The guideline names commercial display fonts, but their binaries are **not** redistributed here. The repository includes only its separately licensed OFL print font, described below. Illustration colours are examples for the README; the exported STLs have no colour and you choose filament locally.
 
 ## One-command workflow
 
@@ -36,7 +55,7 @@ The generated top and base are **separate single-colour millimetre STLs**. Impor
 | Raw mesh → top | Blender `scripts/weld_plug.py` and `scripts/repair_boolean_slivers.py` | 0.18 mm voxel repair, standard diamond plug, microscopic sliver cleanup; larger damage refused |
 | Name/message → base | Blender `scripts/build_base_named.py` | font measured; undersized wording refused |
 | Written-file QA | Blender `scripts/inspect_stl.py` | each STL must be one watertight body at plausible scale; top must show a centred diamond plug section |
-| Views and record | Blender `scripts/render_views.py`, `make_award.py` | ten PNGs and checksummed manifest |
+| Views and record | Blender `scripts/render_views.py`, `make_award.py` | twelve PNGs and checksummed manifest |
 
 These checks are necessary but do not measure every thin feature, visual likeness, surface finish, orientation or physical strength. No arbitrary photo-to-award system can guarantee those without inspecting the result and a physical trial. [PHOTO_TO_TOP.md](PHOTO_TO_TOP.md) describes input choices and failure cases; it is not a mandatory manual modelling step.
 

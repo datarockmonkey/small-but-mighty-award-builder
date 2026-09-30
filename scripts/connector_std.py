@@ -3,11 +3,11 @@ connector_std.py
 ================
 THE single source of truth for the modular award connector.
 
-Every BASE socket and every TOKEN plug is built from these numbers, so any
-token in the library physically fits any base. Change a value here and both
-build_base.py and weld_plug.py update together.
+The public named-base socket and top plug use these same nominal numbers.
+Physical fit still requires a printer-specific trial. Change a value here and
+both build_base_named.py and weld_plug.py read the updated default.
 
-Connector type: compliant FRICTION fit for FDM (no glue, no magnets).
+Connector type: intended compliant FRICTION fit for FDM (no glue, no magnets).
 Design follows the friction-fit technique notes:
   - square plug with rounded corners + a top starter chamfer (self-aligning wedge)
   - socket sized with an intentional clearance gap (slicer-safe on FDM)
@@ -32,14 +32,14 @@ All units are millimetres.
 # depth with real walls. NOT compatible with pre-diamond printed parts.
 PLUG_DIAMOND    = True   # both weld_plug.py and build_base.py honour this
 PLUG_W          = 16.0   # square plug footprint (X and Y), pre-rotation
-PLUG_H          = 8.0    # how far the plug sticks down / into the socket
+PLUG_H          = 8.0    # plug body height before weld overlap; exposed length is shorter
 PLUG_CORNER_R   = 1.2    # rounded vertical corners (reduce contact stress)
 PLUG_TOP_CHAMFER = 1.2   # starter wedge on the leading (bottom) edge of the plug
-PLUG_ROOT_CHAMFER = 0.4  # chamfer where plug meets token body (anti elephant-foot)
+PLUG_ROOT_CHAMFER = 0.4  # reserved legacy setting; current weld_plug.py does not apply it
 
 # ---- socket (cut into the top face of every base) ----
 SOCKET_CLEARANCE = 0.35  # per-side gap between plug and socket wall (>=0.3 = slicer safe)
-SOCKET_W         = PLUG_W + 2 * SOCKET_CLEARANCE   # 20.70
+SOCKET_W         = PLUG_W + 2 * SOCKET_CLEARANCE   # 16.70
 SOCKET_DEPTH     = PLUG_H + 0.6                     # a touch deeper so the plug seats fully
 SOCKET_MOUTH_CHAMFER = 1.0                          # funnels the plug in at the opening
 
@@ -49,14 +49,13 @@ RIB_WIDTH  = 2.5    # rib width along the wall
 RIB_HEIGHT = 5.0    # rib height up the wall (leaves the chamfered mouth clear)
 
 # ---- flat-backed relief ----
-# Tokens are cut to a flat back (keeping the domed 3D front) so they print flat
-# on the bed with full contact (no warping, no supports). This fraction of the
-# token's depth (front side) is kept; the rest is sliced off flat.
+# Optional legacy relief mode cuts a flat back and keeps this fraction of the
+# token's front depth. The default public make_award.py run uses a full 3D top.
 RELIEF_FRONT_KEEP = 0.6
 
 # ---- base default geometry ----
 # Front face = 40 mm wide x 30 mm tall (per Trophy base.pdf, 2026-06-17), 1 mm margin.
-# Depth kept at 30 mm for a balanced plinth that still seats the 20 mm plug.
+# Depth kept at 30 mm for a balanced plinth around the rotated 16 mm plug.
 BASE_W = 40.0
 BASE_D = 30.0
 BASE_H = 30.0

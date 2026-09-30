@@ -5,7 +5,8 @@ Turn a reviewed raw top mesh into a connector-equipped STL candidate:
 
   1. import the token (OBJ / GLB / STL)
   2. auto-orient: drop it flat onto z=0 and centre it on XY
-  3. scale it to a target footprint so it sits nicely on the 40x40 base
+  3. scale it to a target maximum horizontal dimension (not a guarantee of
+     no overhang beyond the base's narrower 30 mm depth)
   4. weld on the STANDARD plug (connector_std.py) pointing DOWN, with a starter
      chamfer on the leading edge so it self-aligns into the base socket
   5. export the combined top STL for separate mesh, visual and print checks
@@ -114,7 +115,7 @@ foot = max(dims.x, dims.y) or 1.0
 height = dims.z or 1.0
 import os as _os
 TARGET_H = float(_os.environ.get("AWARD_TARGET_H", "40"))   # standard token body height (mm)
-s_foot = TARGET_MM / foot        # never exceed the 38mm base footprint
+s_foot = TARGET_MM / foot        # max horizontal dimension; 30mm base depth may still be overhung
 s_height = TARGET_H / height     # aim every token at the same height
 s = min(s_foot, s_height)        # whichever binds first: uniform height, but never overflow base
 token.scale = (s, s, s)

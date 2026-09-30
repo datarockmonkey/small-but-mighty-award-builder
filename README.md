@@ -8,6 +8,18 @@ Give the workflow one image and your own wording. It runs image-to-3D generation
 
 The image shows the **two printable parts**: a generated top with the diamond plug welded into its underside, and a personalised base with the matching socket in its top. Print the two STLs separately, then test the fit before pressing them together. The arrow shows assembly direction; the image is a branded **concept illustration**, not a measured render or proof of a physical fit. For real output from this repository, see the [open-book end-to-end test](examples/OPEN_BOOK_TEST.md).
 
+### Diamond connector at a glance
+
+| Feature | Nominal default |
+| --- | ---: |
+| Plug | 16.00 mm square, rotated 45° into a diamond; 8.00 mm body height, about 7.00 mm exposed after the 1.00 mm weld overlap |
+| Matching base socket | 16.70 mm square, same 45° rotation; 8.60 mm deep |
+| Open wall clearance | **0.35 mm per side** before the ribs |
+| Four socket ribs | Project 0.30 mm into the socket, leaving a nominal **0.05 mm per side** at the rib contacts |
+| Base body | 40 × 30 × 30 mm before raised front lettering |
+
+Those are design dimensions, not a promise of a physical friction fit. The full [award and connector specifications](AWARD_SPECIFICATIONS.md) list the chamfers, rib dimensions, base text, scaling, validation gates, and measured open-book example.
+
 ## Brand notes
 
 Small But Mighty is about recognising what makes someone *them*. Write a specific, positive message on the base rather than a generic ranking or comparison. The full [brand guidelines for this repository](BRAND_GUIDELINES.md) cover the visual system, typography, diagrams, and honest product claims. This README illustration uses the four primary colours:

@@ -32,6 +32,7 @@ class OrchestratorTests(unittest.TestCase):
             for stage in ("trellis_generate.py", "weld_plug.py", "build_base_named.py",
                           "inspect_stl.py", "render_views.py"):
                 self.assertIn(stage, commands)
+            self.assertIn("PYTHONPATH=" + str(trellis.resolve()), commands)
             self.assertEqual(commands.count("inspect_stl.py"), 2)
             self.assertEqual(commands.count("render_views.py"), 2)
 

@@ -75,6 +75,7 @@ def main(argv=None):
     blender = [args.blender, "--background", "--factory-startup", "--python-exit-code", "1", "--python"]
     run([args.trellis_python, ROOT / "scripts/trellis_generate.py", "--image", image,
          "--out", raw, "--model", args.model, "--seed", args.seed], cwd=trellis_root,
+        extra_env={"PYTHONPATH": str(trellis_root) + os.pathsep + os.environ.get("PYTHONPATH", "")},
         dry_run=args.dry_run)
     run(blender + [ROOT / "scripts/weld_plug.py", "--", raw, top, 38, 0],
         extra_env={"AWARD_VOXEL_MM": "0.18"}, dry_run=args.dry_run)

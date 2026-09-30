@@ -121,6 +121,19 @@ token.scale = (s, s, s)
 set_active(token)
 bpy.ops.object.transform_apply(scale=True)
 
+# TRELLIS meshes commonly contain open reconstruction islands. On the public
+# photo workflow, an explicit 0.18 mm voxel pass closes small gaps before the
+# connector boolean. The standalone script defaults to no remesh, preserving
+# already-curated inputs. This cannot rescue lost identity or large gaps.
+VOXEL_MM = float(os.environ.get("AWARD_VOXEL_MM", "0"))
+if VOXEL_MM > 0:
+    token.data.remesh_voxel_size = VOXEL_MM
+    set_active(token)
+    bpy.ops.object.voxel_remesh()
+    if not token.data.polygons:
+        raise RuntimeError("Voxel repair produced no faces")
+    print(f"[repair] voxel={VOXEL_MM:.3f}mm faces={len(token.data.polygons)}")
+
 # centre on XY, drop flat onto z=0
 mins, maxs = world_bounds(token)
 center = (mins + maxs) / 2

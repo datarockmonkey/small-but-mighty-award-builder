@@ -1,69 +1,51 @@
-# Make a Small But Mighty award at home
+# Small But Mighty award builder
 
-This is the free making workflow. Start with a photo you own or have permission to use, turn its subject into a **top charm**, repair and inspect that mesh, add the standard diamond plug, then generate a base with your own wording. Slice the two resulting STLs for **your** printer. The optional paid STL pack is a curated shortcut; this source and these instructions do not require a purchase.
+Give the workflow one image and your own wording. It runs image-to-3D generation, attaches the standard diamond plug, makes a named base, checks both written STLs, and renders ten inspection views. There is no hand-modelling handoff in the command. **A passed run produces candidate STLs, not a print-proven award:** shape identity, surface quality, support strategy and physical plug/socket fit still depend on the input and printer.
 
-The automated parts here run in [Blender 5.0](https://www.blender.org/download/releases/5-0/). They are source tools, not a one-click promise. The photo-to-3D conversion is a manual handoff to an external image-to-3D tool, and different photos need different modelling repairs. The repository contains no photos, generated model weights, font binaries, machine G-code or printer-control commands.
+## One-command workflow
 
-## What you need
+Prerequisites:
 
-- Blender 5.0.1 was used for the verified example. No pip packages are needed for the included base, connector, geometry inspection or render scripts.
-- A photo you may use. Isolate one object against a plain background, show the whole shape and avoid loose or floating parts. A three-quarter view showing front, side and top is easier for image-to-3D than a flat frontal view.
-- An image-to-3D generator that exports GLB, OBJ or STL. The studio used [Microsoft TRELLIS](https://github.com/microsoft/TRELLIS) for some runs. Follow its own installation and model terms; it needs a compatible GPU and substantial dependencies, and its outputs often need repair. An external hosted service may charge and has its own usage and commercial terms. No generator or account is bundled here.
-- A locally installed font that you have rights to use for your purpose. The verified sample used DejaVu Sans Bold on Linux. The repository does not redistribute a font.
-- A slicer configured for your actual machine, nozzle, material and bed. STL is geometry, not printer instructions.
+1. A Linux machine with an NVIDIA GPU and at least 16 GB VRAM, and a working [Microsoft TRELLIS installation](https://github.com/microsoft/TRELLIS#installation). Install its dependencies and model under [its own licence](https://github.com/microsoft/TRELLIS#license). Model weights are not copied into this repository.
+2. [Blender 5.0](https://www.blender.org/download/releases/5-0/) available as `blender`, or pass `--blender /path/to/blender`.
+3. A single subject image you own or are licensed to use. A whole object against a plain background works best. Do not use another seller's product photograph as a cloning input.
 
-## Step 1 — from photo to raw top mesh
-
-Use your own photo as the image-to-3D input. Export only the intended object to `output/raw-top.glb` (or `.obj`/`.stl`). Inspect the result in a 3D editor from front, side, top and underneath. Remove background, floating pieces and model-generated plinths. A reconstructed colour patch is not structural geometry; check actual thickness. Keep the recognisable silhouette. For round objects, keep the curves round; do not apply low-poly faceting automatically.
-
-This is the one step this repository cannot make reproducible across all owners' photos or GPU setups. A generator output is **not** a release-ready STL. Read [PHOTO_TO_TOP.md](PHOTO_TO_TOP.md) for the edits and rejection criteria.
-
-## Step 2 — attach the standard connector
-
-For a reviewed, solid raw mesh:
+From this repository, run:
 
 ```sh
-blender --background --factory-startup --python-exit-code 1 \
-  --python scripts/weld_plug.py -- output/raw-top.glb output/top-with-plug.stl 38 0
+python3 make_award.py \
+  --image /path/to/your-object.png \
+  --name "Alex" \
+  --message "Well|Done" \
+  --trellis-root /path/to/TRELLIS \
+  --trellis-python /path/to/trellis-env/bin/python \
+  --out output/alex-award
 ```
 
-The final `0` disables decimation, which preserves round surfaces. The script scales the body to a 38 mm maximum footprint / 40 mm maximum height, centres it, adds an 8 mm deep diamond plug and writes **millimetre STL**. It now refuses spatially detached islands. It does not know where the solid load path belongs: a handle, gap, stem or thin wall needs a manual connector position and likely a different body edit. A visually ugly central riser is a rejection, even if mesh checks pass. Never scale a finished plug.
+TRELLIS may download its model on first use. Use `--dry-run` to see all commands without running the model or Blender. `--model` accepts a local model directory or model ID; `--seed` fixes the generation seed. The output folder must be new or empty, so each run has independent evidence.
 
-For a toolchain control unrelated to any photo or product design, run `scripts/make_geometry_control.py` first, then use its output as `raw-top.glb` with `.stl` extension. This confirms that Blender and the connector script execute; it does not prove a real subject or a print.
+The output contains `raw-top.glb`, `top-with-plug.stl`, `named-base.stl`, five views for each STL (`front`, `side`, `top`, `bottom`, `display`), `PRINT_HANDOFF.md`, and `manifest.json` with the input, font and output checksums plus actual geometry inspection results. The top stage applies a 0.18 mm voxel repair to close small reconstruction gaps before attaching the plug. A failed generation, Blender command, mesh inspection or missing output stops the run; it does not write a success manifest. A valid result can still depict the wrong subject or have a weak joint. If so, use another input image or seed and start a new run. The tool does not silently keep repairing a shape until a test passes.
 
-## Step 3 — make the named base
+The generated top and base are **separate single-colour millimetre STLs**. Import them into a slicer configured for your nozzle, material and printer. Review the slicer preview, print one fit test and inspect the real part before calling it proven. The nominal plug is 16.00 mm and the socket is 16.70 mm, but a real friction fit depends on machine calibration. This repository does not start a printer or promise a universal G-code file.
 
-```sh
-blender --background --factory-startup --python-exit-code 1 \
-  --python scripts/build_base_named.py -- \
-  --name "Alex" --message "Well|Done" \
-  --font /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf \
-  --out output/alex-base.stl
-```
+## What the command automates
 
-The name is on the back; the front wording is raised. `|` makes an explicit line break. The script rejects wording under a measured 5 mm capital height. It does not guarantee all glyphs, stroke widths or names. Both parts are separate single-colour STLs; colour changes are optional. The socket nominal width is 16.70 mm and the plug nominal width is 16.00 mm. Real fit depends on printer calibration and material.
+| Stage | Program | Output / gate |
+| --- | --- | --- |
+| Image → raw mesh | Installed TRELLIS via `scripts/trellis_generate.py` | GLB must be written |
+| Raw mesh → top | Blender `scripts/weld_plug.py` | 0.18 mm voxel repair, standard diamond plug; detached islands refused |
+| Name/message → base | Blender `scripts/build_base_named.py` | font measured; undersized wording refused |
+| Written-file QA | Blender `scripts/inspect_stl.py` | each STL must be one watertight body at plausible scale |
+| Views and record | Blender `scripts/render_views.py`, `make_award.py` | ten PNGs and checksummed manifest |
 
-## Step 4 — inspect the actual written files
+These checks are necessary but do not measure every thin feature, visual likeness, surface finish, orientation or physical strength. No arbitrary photo-to-award system can guarantee those without inspecting the result and a physical trial. [PHOTO_TO_TOP.md](PHOTO_TO_TOP.md) describes input choices and failure cases; it is not a mandatory manual modelling step.
 
-```sh
-blender --background --factory-startup --python-exit-code 1 \
-  --python scripts/inspect_stl.py -- output/top-with-plug.stl
-blender --background --factory-startup --python-exit-code 1 \
-  --python scripts/inspect_stl.py -- output/alex-base.stl
-blender --background --factory-startup --python-exit-code 1 \
-  --python scripts/render_views.py -- output/top-with-plug.stl output/top-view
-```
+## The one bundled font
 
-Check five generated views, especially the underside and the likely display angle. The inspector measures dimensions, volume, open edges, inconsistent winding and connected bodies. It cannot prove a strong neck, good seat, support removal, bed adhesion, surface quality or physical fit. Edit the raw mesh and rerun if any view fails. Do not silently repair a shape into a different subject.
+`fonts/SBMSoftCounterPrototype-Regular.ttf` is the **only font binary** in this repository and is the default for the base. It is a modified version of Poetsen One: the source authors retain their copyright, the modified font has a new name, and it is distributed under the [SIL Open Font License 1.1](fonts/OFL.txt). The repository's [MIT licence](LICENSE) covers our code, **not the font**. Its exact SHA-256 is `7ba873fc63c8bc36730123d227cc19be99ec433c91094a8d6019582b75807252`. This is a print-first prototype; the enlarged counters have been measured, but the `a` aperture and physical print result are not production-validated. Use `--font /path/to/another-licensed-font.ttf` if preferred.
 
-## Step 5 — slice and test your own setup
+## Evidence and scope
 
-Import the top and base as separate STLs into your slicer. Confirm the slicer shows millimetres and a roughly 40 mm base. Choose an orientation with real body-to-bed contact, then decide whether a brim or supports are needed. Keep supports off the display face where practical and inspect the preview layer by layer. A historical K2 control used a 0.4 mm nozzle, PLA, 0.12 mm layers, 15% grid infill and tree supports, but that is **reference evidence only**, not a universal profile. Print one calibration control before a batch. Check the actual fit and surface in hand. No physical print of this public toolchain control was started for this release.
+The base and connector scripts previously passed a neutral Blender 5.0.1 geometry control: one watertight body each at plausible dimensions, with five top views rendered. That control did **not** test TRELLIS or a physical print. This newly connected photo-to-STL command has been checked statically and with orchestration tests; a full model run has not been executed for this revision. The repo must not be presented as end-to-end **validated** until a real input completes the command and its output is inspected and printed.
 
-## What was verified for this source snapshot
-
-On Blender 5.0.1, `Alex` / `Well|Done` exported at 40 × 31.6 × 30 mm; the written base STL had one body, no non-manifold or inconsistent-winding edges, and positive volume. A neutral sphere control passed through the top connector script; the written top measured 38 × 30.4 × 38 mm and also had one watertight body. Five top views were rendered and inspected. The first extracted top script mistakenly exported a 0.038 mm width; that scale error was fixed before this snapshot. Neither control was physically printed. They establish tool execution and basic geometry only.
-
-## Licence and scope
-
-The source code in this repository is offered under [MIT](LICENSE) by Dotted Line Studio LTD. Your photo, generated mesh, model service and font each have **separate** rights. This repository grants no right to redistribute anyone else's image, model or font. No paid STL assets are included here. See [SOURCE_SCOPE.md](SOURCE_SCOPE.md).
+No paid STL pack, private customer data, third-party photographs, model weights, secret keys or machine-control commands are included. See [SOURCE_SCOPE.md](SOURCE_SCOPE.md).

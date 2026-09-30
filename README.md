@@ -46,6 +46,6 @@ These checks are necessary but do not measure every thin feature, visual likenes
 
 ## Evidence and scope
 
-The base and connector scripts previously passed a neutral Blender 5.0.1 geometry control: one watertight body each at plausible dimensions, with five top views rendered. That control did **not** test TRELLIS or a physical print. This newly connected photo-to-STL command has been checked statically and with orchestration tests; a full model run has not been executed for this revision. The repo must not be presented as end-to-end **validated** until a real input completes the command and its output is inspected and printed.
+The complete command has now passed one real image-to-STL run from a fresh clone of commit `96b3f9d`: an original upright open-book image produced a one-body, watertight top with a centred diamond plug, a one-body, watertight named base, and review renders. See the [test record](examples/OPEN_BOOK_TEST.md) and [downloadable evidence](https://drive.google.com/drive/folders/1srD06FElxI335N2Jff9JZxn8iHdMbUA2). The result was visually recognisable but thick and lacking page detail. This validates the command path for that input; it does **not** validate print quality, physical fit, or the workflow for every image.
 
 No paid STL pack, private customer data, third-party photographs, model weights, secret keys or machine-control commands are included. See [SOURCE_SCOPE.md](SOURCE_SCOPE.md).

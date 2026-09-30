@@ -100,14 +100,18 @@ def main(argv=None):
             reports[label] = json.loads(lines[0])
             if not reports[label]["basic_mesh_pass"]:
                 raise RuntimeError(f"{label} failed mesh checks")
-        run(blender + [ROOT / "scripts/render_views.py", "--", part, out / f"{label}-view"],
+        run(blender + [ROOT / "scripts/render_views.py", "--", part, out / f"{label}-view",
+                       "--kind", label],
             dry_run=args.dry_run)
+    run(blender + [ROOT / "scripts/render_award.py", "--", top, base, out / "award-view"],
+        dry_run=args.dry_run)
 
     if args.dry_run:
         return 0
     expected = [raw, top, base] + [out / f"{label}-view-{angle}.png"
                                     for label in ("top", "base")
                                     for angle in ("front", "side", "top", "bottom", "display")]
+    expected += [out / f"award-view-{angle}.png" for angle in ("front", "display")]
     missing = [str(p) for p in expected if not p.is_file() or p.stat().st_size == 0]
     if missing:
         raise RuntimeError(f"output missing or empty: {', '.join(missing)}")

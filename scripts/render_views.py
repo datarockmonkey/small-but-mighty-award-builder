@@ -8,8 +8,11 @@ import os
 import sys
 
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
+kind='top'
+if len(args)==4 and args[2]=='--kind' and args[3] in ('top','base'):
+    kind=args[3]; args=args[:2]
 if len(args)!=2 or not os.path.isfile(args[0]):
-    raise SystemExit('Provide input STL and output prefix')
+    raise SystemExit('Provide input STL, output prefix, and optionally --kind top|base')
 input_path=os.path.abspath(args[0]); prefix=os.path.abspath(args[1])
 os.makedirs(os.path.dirname(prefix),exist_ok=True)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
@@ -19,7 +22,9 @@ obj=next(o for o in bpy.context.scene.objects if o.type=='MESH')
 mat=bpy.data.materials.new('Clay'); mat.diffuse_color=(0.69,0.44,0.29,1); mat.use_nodes=True
 mat.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(0.69,0.44,0.29,1)
 obj.data.materials.append(mat)
-for face in obj.data.polygons: face.use_smooth=True
+# The boolean-cut base front must stay flat shaded: smoothing its fan
+# triangulation creates false radial streaks around the raised lettering.
+for face in obj.data.polygons: face.use_smooth=(kind=='top')
 mins=[min(v.co[i] for v in obj.data.vertices) for i in range(3)]
 maxs=[max(v.co[i] for v in obj.data.vertices) for i in range(3)]
 center=Vector([(a+b)/2 for a,b in zip(mins,maxs)])

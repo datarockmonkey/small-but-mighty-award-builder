@@ -25,12 +25,12 @@ bm.from_mesh(obj.data)
 before = sum(not edge.is_manifold for edge in bm.edges)
 slivers = [
     face for face in bm.faces
-    if face.calc_area() < 0.0001
+    if face.calc_area() < 0.001
     and sum(len(edge.link_faces) == 1 for edge in face.edges) >= 2
     and any(len(edge.link_faces) == 3 for edge in face.edges)
 ]
-if len(slivers) > 20:
-    raise RuntimeError(f"Too many boolean slivers to repair safely: {len(slivers)}")
+if len(slivers) > 20 or sum(face.calc_area() for face in slivers) > 0.02:
+    raise RuntimeError(f"Too much boolean damage to repair safely: {len(slivers)} faces")
 if slivers:
     bmesh.ops.delete(bm, geom=slivers, context="FACES")
 after = sum(not edge.is_manifold for edge in bm.edges)

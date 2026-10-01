@@ -1,5 +1,7 @@
 # Small But Mighty award builder
 
+<img src="assets/sbm-mascot.png" alt="Small But Mighty lime-green smiling mascot with a blue outline" width="112">
+
 Give the workflow one image and your own wording. It runs image-to-3D generation, attaches the standard diamond plug, makes a named base, checks both written STLs, and renders twelve review views. There is no hand-modelling handoff in the command. **A passed run produces candidate STLs, not a print-proven award:** shape identity, surface quality, support strategy and physical plug/socket fit still depend on the input and printer.
 
 ## How the two parts meet
@@ -73,7 +75,9 @@ These checks are necessary but do not measure every thin feature, visual likenes
 
 ## The one bundled font
 
-`fonts/SBMSoftCounterPrototype-Regular.ttf` is the **only font binary** in this repository and is the default for the base. It is a modified version of Poetsen One: the source authors retain their copyright, the modified font has a new name, and it is distributed under the [SIL Open Font License 1.1](fonts/OFL.txt). The repository's [MIT licence](LICENSE) covers our code, **not the font**. Its exact SHA-256 is `7ba873fc63c8bc36730123d227cc19be99ec433c91094a8d6019582b75807252`. This is a print-first prototype; the enlarged counters have been measured, but the `a` aperture and physical print result are not production-validated. Use `--font /path/to/another-licensed-font.ttf` if preferred.
+Yes: [`SBMSoftCounterPrototype-Regular.ttf`](fonts/SBMSoftCounterPrototype-Regular.ttf) (**SBM Soft Counter Prototype V1**) is the **only font binary** in this repository and is the default for the base. The [standalone mascot artwork](assets/sbm-mascot.png) is also included; it has no embedded type and is not a full wordmark. The commercial logo and display fonts named in the brand guide are not bundled or used by the award-building command.
+
+The font is a modified version of Poetsen One: the source authors retain their copyright, the modified font has a new name, and it is distributed under the [SIL Open Font License 1.1](fonts/OFL.txt). The repository's [MIT licence](LICENSE) covers our code, **not the font or mascot artwork**. The font's exact SHA-256 is `7ba873fc63c8bc36730123d227cc19be99ec433c91094a8d6019582b75807252`. This is a print-first prototype; the enlarged counters have been measured, but the `a` aperture and physical print result are not production-validated. Use `--font /path/to/another-licensed-font.ttf` if preferred.
 
 ## Evidence and scope
 

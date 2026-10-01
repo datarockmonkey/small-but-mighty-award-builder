@@ -32,9 +32,9 @@ For a new diagram, begin with white or Navy, choose one dominant primary accent,
 
 The source guideline names **CCOverbyteOff** for the logo, **Logic Monospace** for brand type, and **LoRes 9 Plus OT** as a display accent. They are commercial fonts. Do not commit their font binaries, trace them into a substitute logo, or assume that a desktop or Adobe Fonts licence permits redistribution in this repository. If a contributor does not have the licensed fonts, use a legible system monospace for working documents and keep the official logo as approved artwork supplied by the owner.
 
-Use the supplied official logo on dark Navy when appropriate. For small light-background use below about 48 px, the source guide shows a blue monochrome version. The mascot in the source sheet is a placement example, not a master logo asset. Do not extract it from the guideline PDF as if it were the production mark.
+Use the supplied official logo on dark Navy when appropriate. For small light-background use below about 48 px, the source guide shows a blue monochrome version. The mascot placement in that sheet is not a master wordmark. This repository includes the owner's [standalone mascot artwork](assets/sbm-mascot.png), copied unchanged from the project's Mascot Still source (SHA-256 `c85bd1ed45461cbdda081323d6f592401ce5172f5880490b299d3aa6eee5c94d`). Treat it as a mascot icon, not as an approved logo lockup or a licence to reconstruct the commercial logo type. For new artwork, use the palette values above rather than sampling colours from this raster source.
 
-The repository's `fonts/SBMSoftCounterPrototype-Regular.ttf` serves a **different purpose**: it is the one bundled, [OFL-licensed](fonts/OFL.txt) prototype font for physical base wording. It is not one of the commercial brand fonts and does not replace them in brand artwork. Its print legibility still needs a real-world check.
+The repository's [`SBMSoftCounterPrototype-Regular.ttf`](fonts/SBMSoftCounterPrototype-Regular.ttf), also called **SBM Soft Counter Prototype V1**, serves a **different purpose**: it is the sole bundled, [OFL-licensed](fonts/OFL.txt) prototype font for physical base wording. It is not one of the commercial brand fonts and does not replace them in official logo artwork. Its print legibility still needs a real-world check.
 
 ## Images and assembly diagrams
 
